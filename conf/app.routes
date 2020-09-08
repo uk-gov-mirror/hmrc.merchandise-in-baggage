@@ -4,7 +4,10 @@ POST       /declarations                uk.gov.hmrc.merchandiseinbaggage.control
 PATCH      /declarations/:id            uk.gov.hmrc.merchandiseinbaggage.controllers.DeclarationController.onUpdate(id: String)
 GET        /declarations/:id            uk.gov.hmrc.merchandiseinbaggage.controllers.DeclarationController.onRetrieve(id: String)
 
-
+->         /govuk-frontend              govuk.Routes
+->         /hmrc-frontend               hmrcfrontend.Routes
+GET        /assets/*file                controllers.Assets.versioned(path = "/public", file: Asset)
 
 GET        /test-only/declarations      uk.gov.hmrc.merchandiseinbaggage.controllers.DeclarationTestOnlyController.declarations
+POST       /test-only/declarations      uk.gov.hmrc.merchandiseinbaggage.controllers.DeclarationTestOnlyController.onSubmit
 

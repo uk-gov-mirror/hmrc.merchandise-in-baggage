@@ -5,20 +5,26 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
+import play.api.i18n.Messages
 import uk.gov.hmrc.merchandiseinbaggage.BaseSpecWithApplication
+
 import scala.concurrent.ExecutionContext.Implicits.global
 import play.api.test.Helpers._
+import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
+import uk.gov.hmrc.merchandiseinbaggage.views.html.DeclarationTestOnlyPage
 
 class DeclarationTestOnlyControllerSpec extends BaseSpecWithApplication {
 
-  val controller = new DeclarationTestOnlyController(component)
+  val view = injector.instanceOf[DeclarationTestOnlyPage]
+  implicit val config = new AppConfig
+  val controller = new DeclarationTestOnlyController(component, view)
 
 
   "ready html page is served which contains copy showing it is a test-only page and a form with which I an enter and submit a declaration" in {
-
-    val result = controller.declarations()(buildGet(routes.DeclarationTestOnlyController.declarations().url))
+    val request = buildGet(routes.DeclarationTestOnlyController.declarations().url)
+    val result = controller.declarations()(request)
 
     status(result) mustBe 200
+    contentAsString(result) mustBe view()(request).toString
   }
-
 }

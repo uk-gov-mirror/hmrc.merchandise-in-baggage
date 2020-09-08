@@ -1,0 +1,19 @@
+@*
+ * Copyright 2020 HM Revenue & Customs
+ *
+ *@
+
+@import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
+@import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
+
+@this()
+
+@()(implicit request: Request[_])
+
+<div>
+    <h1 class="govuk-heading-xl">merchandise-in-baggage payment</h1>
+
+    <form action="@DeclarationTestOnlyController.onSubmit()" method="post">
+        <button class="govuk-button" type="submit">Submit</button>
+    </form>
+</div>
