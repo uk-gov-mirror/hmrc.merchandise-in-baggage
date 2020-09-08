@@ -19,8 +19,13 @@ trait AuthConfiguration {
 }
 
 trait MongoConfiguration {
-  lazy val mongoConf: MongoConf = configSource("mongodb").loadOrThrow[MongoConf]
+  lazy val mongoConf: MongoConfig = configSource("mongodb").loadOrThrow[MongoConfig]
 }
 
-final case class MongoConf(uri: String, host: String = "localhost", port: Int = 27017, collectionName: String = "declaration")
+trait StrideConfiguration {
+  lazy val strideConf: StrideConfig = configSource("stride.role").loadOrThrow[StrideConfig]
+}
+
+final case class MongoConfig(uri: String, host: String = "localhost", port: Int = 27017, collectionName: String = "declaration")
 final case class AuthConfig(protocol: String, host: String, port: Int)
+final case class StrideConfig(strideRole: String)

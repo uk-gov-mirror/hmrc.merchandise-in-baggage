@@ -9,6 +9,7 @@ import cats.instances.future._
 import javax.inject.Inject
 import play.api.libs.json.Json
 import play.api.mvc._
+import uk.gov.hmrc.merchandiseinbaggage.auth.StrideAuthAction
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationIdResponse
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationIdResponse._
 import uk.gov.hmrc.merchandiseinbaggage.model.core.{DeclarationId, DeclarationNotFound, InvalidPaymentStatus}
@@ -19,10 +20,11 @@ import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
 import scala.concurrent.{ExecutionContext, Future}
 
 class DeclarationController @Inject()(mcc: MessagesControllerComponents,
+                                      strideAuth: StrideAuthAction,
                                       declarationRepository: DeclarationRepository)(implicit val ec: ExecutionContext)
   extends BackendController(mcc) with DeclarationService {
 
-  def onDeclarations(): Action[AnyContent] = Action(parse.default).async { implicit request  =>
+  def onDeclarations(): Action[AnyContent] = strideAuth.async { implicit request =>
     RequestWithDeclaration().map(rwp =>
       persistDeclaration(declarationRepository.insert, rwp.paymentRequest).map { dec =>
         Created(Json.toJson(DeclarationIdResponse(dec.declarationId)))
