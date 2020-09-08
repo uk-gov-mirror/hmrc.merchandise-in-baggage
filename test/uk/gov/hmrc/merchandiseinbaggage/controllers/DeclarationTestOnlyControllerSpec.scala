@@ -5,13 +5,12 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
-import play.api.i18n.Messages
-import uk.gov.hmrc.merchandiseinbaggage.BaseSpecWithApplication
-
-import scala.concurrent.ExecutionContext.Implicits.global
 import play.api.test.Helpers._
+import uk.gov.hmrc.merchandiseinbaggage.BaseSpecWithApplication
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggage.views.html.DeclarationTestOnlyPage
+
+import scala.concurrent.ExecutionContext.Implicits.global
 
 class DeclarationTestOnlyControllerSpec extends BaseSpecWithApplication {
 
