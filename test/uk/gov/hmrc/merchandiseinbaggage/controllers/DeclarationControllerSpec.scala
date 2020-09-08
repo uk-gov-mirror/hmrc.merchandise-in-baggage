@@ -7,12 +7,11 @@ package uk.gov.hmrc.merchandiseinbaggage.controllers
 
 import cats.data.EitherT
 import play.api.libs.json.Json
-import play.api.mvc.MessagesControllerComponents
 import play.api.test.Helpers._
 import play.modules.reactivemongo.ReactiveMongoComponent
 import uk.gov.hmrc.merchandiseinbaggage.config.MongoConfiguration
 import uk.gov.hmrc.merchandiseinbaggage.model.api.{DeclarationIdResponse, DeclarationRequest, PaymentStatusRequest}
-import uk.gov.hmrc.merchandiseinbaggage.model.core.{BusinessError, Declaration, DeclarationId, InvalidPaymentStatus, Outstanding, Paid, PaymentStatus}
+import uk.gov.hmrc.merchandiseinbaggage.model.core._
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationRepository
 import uk.gov.hmrc.merchandiseinbaggage.{BaseSpecWithApplication, CoreTestData}
 import uk.gov.hmrc.mongo.MongoConnector
@@ -21,8 +20,6 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
 
 class DeclarationControllerSpec extends BaseSpecWithApplication with CoreTestData with MongoConfiguration {
-
-  private lazy val component = injector.instanceOf[MessagesControllerComponents]
 
   "on submit will persist the declaration returning 201 + declaration id" in {
     val declaration = aDeclaration
