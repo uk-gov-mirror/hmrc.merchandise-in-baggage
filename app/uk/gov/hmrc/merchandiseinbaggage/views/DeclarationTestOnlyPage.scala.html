@@ -5,15 +5,34 @@
 
 @import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
 @import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
+@import uk.gov.hmrc.merchandiseinbaggage.controllers.DeclarationData
+@import uk.gov.hmrc.merchandiseinbaggage.controllers.Forms._
+@import uk.gov.hmrc.play.views.html.helpers._
+@import helper._
 
 @this()
 
-@()(implicit request: Request[_])
+@(form: Form[DeclarationData])(implicit request: Request[_])
 
-<div>
-    <h1 class="govuk-heading-xl">merchandise-in-baggage payment</h1>
+@helper.form(action = DeclarationTestOnlyController.onSubmit()) {
 
-    <form action="@DeclarationTestOnlyController.onSubmit()" method="post">
-        <button class="govuk-button" type="submit">Submit</button>
-    </form>
-</div>
+    <div>
+        <h1 class="govuk-heading-xl">This is a test only merchandise-in-baggage declaration</h1>
+
+        <div class="form-field-group">
+
+            <fieldset>
+                <legend class="margin-top-0 margin-bottom-0">
+                    <h1 class="heading-xlarge">Declaration json</h1>
+                </legend>
+
+                <div class="form-group form-field-group">
+                    <label class="govuk-label-m">Input declaration</label>
+                    <input id="@declarationFormIdentifier" type="text" name="@declarationFormIdentifier">
+                </div>
+            </fieldset>
+        </div>
+        <br>
+        <input type="submit" value="Submit">
+    </div>
+}

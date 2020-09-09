@@ -5,25 +5,43 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
+import cats.data.EitherT
 import javax.inject.Inject
+import play.api.data.Form
+import play.api.libs.json.Json
 import play.api.mvc._
-import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
+import uk.gov.hmrc.merchandiseinbaggage.controllers.Forms._
+import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationRequest
+import uk.gov.hmrc.merchandiseinbaggage.model.core.{Declaration, InvalidDeclarationRequest}
+import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationRepository
 import uk.gov.hmrc.merchandiseinbaggage.views.html.DeclarationTestOnlyPage
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class DeclarationTestOnlyController @Inject()(mcc: MessagesControllerComponents,
-                                              views: DeclarationTestOnlyPage)
-                                             (implicit val ec: ExecutionContext, appConfig: AppConfig)
+                                              views: DeclarationTestOnlyPage,
+                                              repository: DeclarationRepository
+                                             )
+                                             (implicit val ec: ExecutionContext)
   extends FrontendController(mcc) {
 
   def declarations(): Action[AnyContent] = Action.async { implicit request  =>
-    Future.successful(Ok(views()))
+    Future.successful(Ok(views(declarationForm("declarationForm"))))
   }
 
   def onSubmit(): Action[AnyContent] = Action.async { implicit request  =>
-    Future.successful(Ok("on submit"))
+    val form: Form[DeclarationData] = declarationForm(declarationFormIdentifier).bindFromRequest
+    val newDeclaration: EitherT[cats.Id, InvalidDeclarationRequest.type, Future[Declaration]] = for {
+      declarationRequest <- EitherT.fromOption(Json.parse(form.data(declarationFormIdentifier)).asOpt[DeclarationRequest], InvalidDeclarationRequest)
+      inserted <- EitherT.pure(repository.insert(declarationRequest.toDeclarationInInitialState))
+    } yield inserted
+
+    newDeclaration fold (
+      _                 => Future.successful(InternalServerError("InvalidRequest")),
+      _.map(declaration => Redirect(routes.DeclarationController.onRetrieve(declaration.declarationId.value)))
+    )
   }
 }
+
 
