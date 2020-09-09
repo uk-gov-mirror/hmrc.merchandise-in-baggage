@@ -21,7 +21,7 @@ trait CoreTestData {
     Declaration(DeclarationId(UUID.randomUUID().toString),
       aTraderName, anAmount, aCsgTpsProviderId, aChargeReference, Outstanding, None, None)
 
-  def aPaymentRequest: DeclarationRequest = DeclarationRequest(aTraderName, anAmount, aCsgTpsProviderId, aChargeReference)
+  def aDeclarationRequest: DeclarationRequest = DeclarationRequest(aTraderName, anAmount, aCsgTpsProviderId, aChargeReference)
 
   implicit class WithPaidStatus(declaration: Declaration) {
     def withPaidStatus(): Declaration = declaration.copy(paymentStatus = Paid)

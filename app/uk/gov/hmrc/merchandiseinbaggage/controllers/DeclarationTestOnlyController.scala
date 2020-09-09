@@ -5,6 +5,7 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
+import cats.Id
 import cats.data.EitherT
 import javax.inject.Inject
 import play.api.data.Form
@@ -24,24 +25,28 @@ class DeclarationTestOnlyController @Inject()(mcc: MessagesControllerComponents,
                                               repository: DeclarationRepository
                                              )
                                              (implicit val ec: ExecutionContext)
-  extends FrontendController(mcc) {
+  extends FrontendController(mcc) with Forms {
 
   def declarations(): Action[AnyContent] = Action.async { implicit request  =>
     Future.successful(Ok(views(declarationForm("declarationForm"))))
   }
 
   def onSubmit(): Action[AnyContent] = Action.async { implicit request  =>
-    val form: Form[DeclarationData] = declarationForm(declarationFormIdentifier).bindFromRequest
-    val newDeclaration: EitherT[cats.Id, InvalidDeclarationRequest.type, Future[Declaration]] = for {
-      declarationRequest <- EitherT.fromOption(Json.parse(form.data(declarationFormIdentifier)).asOpt[DeclarationRequest], InvalidDeclarationRequest)
-      inserted <- EitherT.pure(repository.insert(declarationRequest.toDeclarationInInitialState))
-    } yield inserted
+    val newDeclaration: EitherT[Id, InvalidDeclarationRequest.type, Future[Declaration]] =
+      for {
+        declarationRequest <- EitherT.fromOption(Json.parse(bindForm.data(declarationFormIdentifier))
+                                .asOpt[DeclarationRequest], InvalidDeclarationRequest)
+        inserted           <- EitherT.pure(repository.insert(declarationRequest.toDeclarationInInitialState))
+      } yield inserted
 
     newDeclaration fold (
       _                 => Future.successful(InternalServerError("InvalidRequest")),
       _.map(declaration => Redirect(routes.DeclarationController.onRetrieve(declaration.declarationId.value)))
     )
   }
+
+  protected def bindForm(implicit request: Request[_]): Form[DeclarationData] =
+    declarationForm(declarationFormIdentifier).bindFromRequest
 }
 
 

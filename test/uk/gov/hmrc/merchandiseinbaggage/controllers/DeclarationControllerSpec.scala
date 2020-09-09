@@ -24,8 +24,8 @@ class DeclarationControllerSpec extends BaseSpecWithApplication with CoreTestDat
   "on submit will persist the declaration returning 201 + declaration id" in {
     val declaration = aDeclaration
     setUp(Right(declaration)) { controller =>
-      val paymentRequest = aPaymentRequest
-      val requestBody = Json.toJson(paymentRequest)
+      val declarationRequest = aDeclarationRequest
+      val requestBody = Json.toJson(declarationRequest)
       val postRequest = buildPost(routes.DeclarationController.onDeclarations().url).withJsonBody(requestBody)
       val eventualResult = controller.onDeclarations()(postRequest)
 

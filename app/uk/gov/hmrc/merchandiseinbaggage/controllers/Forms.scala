@@ -8,16 +8,17 @@ package uk.gov.hmrc.merchandiseinbaggage.controllers
 import play.api.data.Form
 import play.api.data.Forms.{mapping, _}
 
-object Forms {
-
-  val declarationFormIdentifier = "declarationForm"
-
+trait Forms {
   def declarationForm(formIdentifier: String): Form[DeclarationData] =
     Form(
       mapping(
         formIdentifier -> text
       )(DeclarationData.apply)(DeclarationData.unapply)
     )
+}
+
+object Forms {
+  val declarationFormIdentifier = "declarationForm"
 }
 
 case class DeclarationData(data: String)

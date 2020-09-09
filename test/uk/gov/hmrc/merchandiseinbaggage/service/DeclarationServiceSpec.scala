@@ -19,7 +19,7 @@ import scala.concurrent.Future
 class DeclarationServiceSpec extends BaseSpecWithApplication with CoreTestData with ScalaFutures {
 
   "persist a declaration from a payment request" in new DeclarationService {
-    val paymentRequest: DeclarationRequest = aPaymentRequest
+    val paymentRequest: DeclarationRequest = aDeclarationRequest
     val declarationInInitialState: Declaration = paymentRequest.toDeclarationInInitialState
     val persist: Declaration => Future[Declaration] = _ => Future.successful(declarationInInitialState)
     import paymentRequest._
